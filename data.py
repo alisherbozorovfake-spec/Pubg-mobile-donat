@@ -8,3 +8,4 @@ UC_PRICES = {
 }
 
 USER_BALANCE = {}
+ORDERS = {}
