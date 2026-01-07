@@ -45,3 +45,21 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+@dp.message(lambda msg: msg.text in UC_PACKS)
+async def select_uc(message: types.Message):
+    user_id = message.from_user.id
+    uc = message.text
+    price = UC_PACKS[uc]
+
+    ORDERS[user_id] = {
+        "uc": uc,
+        "price": price,
+        "pubg_id": None,
+        "paid": False
+    }
+
+    await message.answer(
+        f"🎮 {uc} tanlandi\n"
+        f"💰 Narx: {price} so‘m\n\n"
+        "📩 PUBG ID yuboring:"
+    )
