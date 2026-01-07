@@ -6,6 +6,5 @@ UC_PRICES = {
     "3850 UC": 790000,
     "8100 UC": 1550000
 }
-
 USER_BALANCE = {}
 ORDERS = {}
