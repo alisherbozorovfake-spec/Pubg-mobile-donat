@@ -63,3 +63,54 @@ async def select_uc(message: types.Message):
         f"💰 Narx: {price} so‘m\n\n"
         "📩 PUBG ID yuboring:"
     )
+@dp.message(lambda msg: msg.text in UC_PACKS)
+async def select_uc(message: types.Message):
+    user_id = message.from_user.id
+    uc = message.text
+    price = UC_PACKS[uc]
+
+    ORDERS[user_id] = {
+        "uc": uc,
+        "price": price,
+        "pubg_id": None,
+        "paid": False
+    }
+
+    await message.answer(
+        f"🎮 {uc} tanlandi\n"
+        f"💰 Narx: {price} so‘m\n\n"
+        "📩 PUBG ID yuboring:"
+    )
+
+# 👇 AYNAN SHU JOYGA QO‘YASAN
+@dp.message(
+    lambda msg: msg.from_user.id in ORDERS
+    and ORDERS[msg.from_user.id]["pubg_id"] is None
+)
+async def get_pubg_id(message: types.Message):
+    user_id = message.from_user.id
+    pubg_id = message.text.strip()
+
+    if not pubg_id.isdigit():
+        await message.answer("❌ PUBG ID faqat raqam bo‘lishi kerak")
+        return
+
+    ORDERS[user_id]["pubg_id"] = pubg_id
+
+    order = ORDERS[user_id]
+    tx_id = f"UC{user_id}"
+
+    pay_url = generate_click_url(
+        order["price"],
+        tx_id,
+        CLICK_SERVICE_ID,
+        CLICK_MERCHANT_ID
+    )
+
+    await message.answer(
+        "✅ Buyurtma tayyor!\n\n"
+        f"🎮 PUBG ID: {pubg_id}\n"
+        f"📦 Paket: {order['uc']}\n"
+        f"💰 Narx: {order['price']} so‘m\n\n"
+        f"💳 To‘lov qilish:\n{pay_url}"
+)
