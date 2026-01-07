@@ -114,3 +114,32 @@ async def get_pubg_id(message: types.Message):
         f"💰 Narx: {order['price']} so‘m\n\n"
         f"💳 To‘lov qilish:\n{pay_url}"
 )
+@dp.message(lambda msg: msg.from_user.id == ADMIN_ID and msg.text.startswith("/done"))
+async def admin_done(message: types.Message):
+    try:
+        _, user_id = message.text.split()
+        user_id = int(user_id)
+    except:
+        await message.answer("❌ Format: /done USER_ID")
+        return
+
+    if user_id not in ORDERS:
+        await message.answer("❌ Buyurtma topilmadi")
+        return
+
+    if not ORDERS[user_id]["paid"]:
+        await message.answer("❌ To‘lov hali tasdiqlanmagan")
+        return
+
+    order = ORDERS[user_id]
+
+    await bot.send_message(
+        user_id,
+        f"🎉 UC tashlandi!\n\n"
+        f"📦 Paket: {order['uc']}\n"
+        f"🎮 PUBG ID: {order['pubg_id']}\n"
+        "Rahmat!"
+    )
+
+    del ORDERS[user_id]
+    await message.answer("✅ Buyurtma yopildi")
